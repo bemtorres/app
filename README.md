@@ -6,7 +6,7 @@ Nx integrated monorepo with Next.js (App Router) frontend and NestJS backend.
 
 | Layer | Tech |
 |---|---|
-| Frontend | Next.js 15, Tailwind CSS, shadcn/ui |
+| Frontend | Next.js 16, Tailwind CSS, shadcn/ui |
 | Backend | NestJS, Prisma ORM |
 | Database | PostgreSQL |
 | Auth | JWT + bcrypt |

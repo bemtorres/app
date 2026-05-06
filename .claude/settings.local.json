@@ -4,7 +4,11 @@
       "Bash(npm --version)",
       "Read(//c/Users/benja/Desktop/Nueva carpeta \\(3\\)/**)",
       "Bash(npx create-nx-workspace@latest app --preset=apps --nxCloud=skip --packageManager=npm --no-interactive)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(node -e \"const p=require\\('./node_modules/next/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/react/package.json'\\).version\\)\")",
+      "Bash(node -e \"const p=require\\('./node_modules/next/package.json'\\); console.log\\(JSON.stringify\\(p.peerDependencies, null, 2\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@types/react/package.json'\\).version\\)\")"
     ]
   }
 }
