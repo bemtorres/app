@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Read(//c/Users/benja/Desktop/Nueva carpeta \\(3\\)/**)",
+      "Bash(npx create-nx-workspace@latest app --preset=apps --nxCloud=skip --packageManager=npm --no-interactive)",
+      "Bash(npm install *)"
+    ]
+  }
+}
