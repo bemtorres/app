@@ -3,18 +3,20 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",
     "libs/*"
   ],
   "scripts": {
+    "dev": "nx run-many --target=serve --projects=api,web --parallel",
     "dev:web": "nx serve web",
     "dev:api": "nx serve api",
     "build:web": "nx build web",
     "build:api": "nx build api",
     "lint": "nx run-many --target=lint",
     "test": "nx run-many --target=test",
-    "db:migrate": "nx run api:db-migrate",
+    "db:migrate": "cd apps/api && npx prisma migrate dev",
     "db:seed": "nx run api:db-seed",
     "db:generate": "nx run api:db-generate"
   },
@@ -42,8 +44,8 @@
     "next-themes": "^0.4.6",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+"react": "^19.0.0",
+"react-dom": "^19.0.0",
     "react-hook-form": "^7.53.0",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
@@ -63,7 +65,7 @@
     "@swc/core": "^1.15.33",
     "@swc/helpers": "^0.5.15",
     "@types/bcrypt": "^5.0.2",
-    "@types/node": "^18.19.0",
+    "@types/node": "^22.10.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
@@ -75,5 +77,8 @@
     "tailwindcss": "^3.4.10",
     "ts-node": "^10.9.2",
     "typescript": "~5.5.2"
+  },
+  "optionalDependencies": {
+    "@next/swc-win32-x64-msvc": "^16.2.5"
   }
 }

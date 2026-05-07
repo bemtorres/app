@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, ShieldAlert } from 'lucide-react';
 import {
   Button, Badge, Card, CardContent,
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
@@ -12,6 +13,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@app/ui';
 import { api } from '@/lib/api';
+import { getUser, isSuperAdmin } from '@/lib/auth';
 import { User, Role } from '@app/types';
 
 const createSchema = z.object({
@@ -29,22 +31,36 @@ const editSchema = z.object({
 type CreateFormData = z.infer<typeof createSchema>;
 type EditFormData = z.infer<typeof editSchema>;
 
+const ROLE_BADGE: Record<Role, string> = {
+  [Role.SUPERADMIN]: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900 dark:text-purple-300',
+  [Role.ADMIN]: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-300',
+  [Role.USER]: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400',
+};
+
 export default function AdminUsersPage() {
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
+  const currentUser = getUser();
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
     useForm<CreateFormData | EditFormData>({
       resolver: zodResolver(editing ? editSchema : createSchema) as any,
     });
 
+  useEffect(() => {
+    if (!isSuperAdmin()) {
+      router.replace('/dashboard');
+      return;
+    }
+    loadUsers();
+  }, []);
+
   async function loadUsers() {
     const res = await api.get<User[]>('/users');
     setUsers(res.data);
   }
-
-  useEffect(() => { loadUsers(); }, []);
 
   function openCreate() {
     setEditing(null);
@@ -70,18 +86,23 @@ export default function AdminUsersPage() {
     loadUsers();
   }
 
-  async function handleDelete(id: number) {
-    if (!confirm('Delete this user?')) return;
-    await api.delete(`/users/${id}`);
+  async function handleDelete(user: User) {
+    if (!confirm(`Delete user "${user.email}"?`)) return;
+    await api.delete(`/users/${user.id}`);
     loadUsers();
   }
+
+  const isSelf = (user: User) => user.id === currentUser?.id;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Users</h2>
-          <p className="text-muted-foreground">Manage application users</p>
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="h-6 w-6 text-purple-600" />
+            <h2 className="text-3xl font-bold tracking-tight">User Management</h2>
+          </div>
+          <p className="text-muted-foreground">Superadmin — manage all application users</p>
         </div>
         <Button onClick={openCreate} className="gap-2">
           <Plus className="h-4 w-4" /> Add User
@@ -101,14 +122,21 @@ export default function AdminUsersPage() {
             </TableHeader>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={user.role === 'ADMIN' ? 'default' : 'secondary'}>
-                      {user.role}
-                    </Badge>
+                <TableRow key={user.id} className={isSelf(user) ? 'bg-muted/40' : ''}>
+                  <TableCell className="font-medium">
+                    {user.email}
+                    {isSelf(user) && (
+                      <span className="ml-2 text-xs text-muted-foreground">(you)</span>
+                    )}
                   </TableCell>
-                  <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <span className={`inline-flex items-center rounded border px-2 py-0.5 text-xs font-semibold ${ROLE_BADGE[user.role as Role]}`}>
+                      {user.role}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(user)}>
@@ -117,8 +145,10 @@ export default function AdminUsersPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-destructive"
-                        onClick={() => handleDelete(user.id)}
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => handleDelete(user)}
+                        disabled={isSelf(user)}
+                        title={isSelf(user) ? 'Cannot delete your own account' : 'Delete user'}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -147,12 +177,16 @@ export default function AdminUsersPage() {
             <div className="space-y-1">
               <Label>Email</Label>
               <Input type="email" {...register('email')} />
-              {errors.email && <p className="text-xs text-destructive">{(errors.email as any).message}</p>}
+              {errors.email && (
+                <p className="text-xs text-destructive">{(errors.email as any).message}</p>
+              )}
             </div>
             <div className="space-y-1">
               <Label>{editing ? 'New Password (optional)' : 'Password'}</Label>
               <Input type="password" {...register('password')} />
-              {errors.password && <p className="text-xs text-destructive">{(errors.password as any).message}</p>}
+              {errors.password && (
+                <p className="text-xs text-destructive">{(errors.password as any).message}</p>
+              )}
             </div>
             <div className="space-y-1">
               <Label>Role</Label>
@@ -160,12 +194,15 @@ export default function AdminUsersPage() {
                 {...register('role')}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
-                <option value="USER">USER</option>
-                <option value="ADMIN">ADMIN</option>
+                <option value={Role.USER}>USER</option>
+                <option value={Role.ADMIN}>ADMIN</option>
+                <option value={Role.SUPERADMIN}>SUPERADMIN</option>
               </select>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Saving...' : editing ? 'Update' : 'Create'}
               </Button>

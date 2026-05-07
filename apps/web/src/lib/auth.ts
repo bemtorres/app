@@ -28,3 +28,7 @@ export function isAuthenticated(): boolean {
 export function isAdmin(): boolean {
   return getUser()?.role === 'ADMIN';
 }
+
+export function isSuperAdmin(): boolean {
+  return getUser()?.role === 'SUPERADMIN';
+}

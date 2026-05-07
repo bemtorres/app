@@ -1,4 +1,6 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable, NotFoundException, ConflictException, ForbiddenException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,16 +33,37 @@ export class UsersService {
     });
   }
 
-  async update(id: number, dto: UpdateUserDto) {
-    await this.findOne(id);
+  async update(id: number, dto: UpdateUserDto, currentUserId: number) {
+    const target = await this.findOne(id);
+
+    // Prevent downgrading a SUPERADMIN if they are the last one
+    if (target.role === 'SUPERADMIN' && dto.role && dto.role !== 'SUPERADMIN') {
+      const superadminCount = await this.prisma.user.count({ where: { role: 'SUPERADMIN' } });
+      if (superadminCount <= 1) {
+        throw new ForbiddenException('Cannot demote the last SUPERADMIN');
+      }
+    }
+
     const data: any = { ...dto };
     if (dto.password) data.password = await bcrypt.hash(dto.password, 10);
 
     return this.prisma.user.update({ where: { id }, data, select: SELECT_SAFE });
   }
 
-  async remove(id: number) {
-    await this.findOne(id);
+  async remove(id: number, currentUserId: number) {
+    if (id === currentUserId) {
+      throw new ForbiddenException('Cannot delete your own account');
+    }
+
+    const target = await this.findOne(id);
+
+    if (target.role === 'SUPERADMIN') {
+      const superadminCount = await this.prisma.user.count({ where: { role: 'SUPERADMIN' } });
+      if (superadminCount <= 1) {
+        throw new ForbiddenException('Cannot delete the last SUPERADMIN');
+      }
+    }
+
     return this.prisma.user.delete({ where: { id }, select: SELECT_SAFE });
   }
 }
