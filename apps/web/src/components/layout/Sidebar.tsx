@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { LayoutDashboard, Users, FileText, LogOut, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { cn } from '@app/ui';
 import { Button } from '@app/ui';
 import { clearAuth, getUser, isSuperAdmin } from '@/lib/auth';
+import type { User } from '@app/types';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -19,7 +21,13 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const user = getUser();
+  const [user, setUser] = useState<User | null>(null);
+  const [superAdmin, setSuperAdmin] = useState(false);
+
+  useEffect(() => {
+    setUser(getUser());
+    setSuperAdmin(isSuperAdmin());
+  }, []);
 
   function handleLogout() {
     clearAuth();
@@ -63,7 +71,7 @@ export function Sidebar() {
           </Link>
         ))}
 
-        {isSuperAdmin() &&
+        {superAdmin &&
           adminItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}

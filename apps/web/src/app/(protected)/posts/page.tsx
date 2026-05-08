@@ -25,6 +25,7 @@ export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Post | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const currentUser = getUser();
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
@@ -50,13 +51,18 @@ export default function PostsPage() {
   }
 
   async function onSubmit(data: PostFormData) {
-    if (editing) {
-      await api.patch(`/posts/${editing.id}`, data);
-    } else {
-      await api.post('/posts', data);
+    setSubmitError(null);
+    try {
+      if (editing) {
+        await api.patch(`/posts/${editing.id}`, data);
+      } else {
+        await api.post('/posts', data);
+      }
+      setOpen(false);
+      loadPosts();
+    } catch (err: any) {
+      setSubmitError(err.response?.data?.message ?? 'Something went wrong');
     }
-    setOpen(false);
-    loadPosts();
   }
 
   async function handleDelete(id: number) {
@@ -66,7 +72,9 @@ export default function PostsPage() {
   }
 
   const canEdit = (post: Post) =>
-    currentUser?.id === post.authorId || currentUser?.role === 'ADMIN';
+    currentUser?.id === post.authorId ||
+    currentUser?.role === 'ADMIN' ||
+    currentUser?.role === 'SUPERADMIN';
 
   return (
     <div className="space-y-6">
@@ -151,6 +159,9 @@ export default function PostsPage() {
               />
               {errors.content && <p className="text-xs text-destructive">{errors.content.message}</p>}
             </div>
+            {submitError && (
+              <p className="text-xs text-destructive">{submitError}</p>
+            )}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>

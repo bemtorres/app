@@ -33,7 +33,8 @@ export class PostsService {
 
   async update(id: number, dto: UpdatePostDto, userId: number, userRole: string) {
     const post = await this.findOne(id);
-    if (post.authorId !== userId && userRole !== 'ADMIN') {
+    const isPrivileged = userRole === 'ADMIN' || userRole === 'SUPERADMIN';
+    if (post.authorId !== userId && !isPrivileged) {
       throw new ForbiddenException('You can only edit your own posts');
     }
     return this.prisma.post.update({ where: { id }, data: dto, include: INCLUDE_AUTHOR });
@@ -41,7 +42,8 @@ export class PostsService {
 
   async remove(id: number, userId: number, userRole: string) {
     const post = await this.findOne(id);
-    if (post.authorId !== userId && userRole !== 'ADMIN') {
+    const isPrivileged = userRole === 'ADMIN' || userRole === 'SUPERADMIN';
+    if (post.authorId !== userId && !isPrivileged) {
       throw new ForbiddenException('You can only delete your own posts');
     }
     return this.prisma.post.delete({ where: { id }, include: INCLUDE_AUTHOR });
