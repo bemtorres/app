@@ -1,132 +1,138 @@
 # Fullstack Monorepo
 
-Nx integrated monorepo with Next.js (App Router) frontend and NestJS backend.
+Nx monorepo con Next.js 16 (App Router) en el frontend y NestJS en el backend.
 
 ## Stack
 
-| Layer | Tech |
+| Capa | Tecnología |
 |---|---|
-| Frontend | Next.js 16, Tailwind CSS, shadcn/ui |
+| Frontend | Next.js 16, React 19, Tailwind CSS, shadcn/ui |
 | Backend | NestJS, Prisma ORM |
-| Database | PostgreSQL |
+| Base de datos | PostgreSQL |
 | Auth | JWT + bcrypt |
-| Monorepo | Nx |
+| Monorepo | Nx 20 |
 
-## Structure
+## Estructura
 
 ```
 app/
 ├── apps/
-│   ├── web/          # Next.js (port 3000)
-│   └── api/          # NestJS  (port 3001)
+│   ├── web/          # Next.js  (puerto 3000)
+│   └── api/          # NestJS   (puerto 3001)
 ├── libs/
-│   ├── types/        # Shared TypeScript interfaces
-│   ├── ui/           # shadcn/ui components
-│   └── config/       # Shared env types & eslint config
-├── docker-compose.yml
+│   └── types/        # Interfaces TypeScript compartidas
 └── package.json
 ```
 
 ## Quick Start
 
-### 1. Configure environment
-
-```bash
-cp .env.example .env.local
-# Edit .env.local with your values
-```
-
-### 2. Start the database
-
-**Option A — Docker (recommended)**
-```bash
-docker-compose up -d
-```
-
-**Option B — PostgreSQL local (no Docker)**
-```bash
-# Create the database
-createdb -U postgres app
-
-# Update DATABASE_URL in apps/api/.env and .env.local:
-# DATABASE_URL="postgresql://<user>:<password>@localhost:5432/app?schema=public"
-```
-
-### 3. Install dependencies
+### 1. Instalar dependencias
 
 ```bash
 npm install
 ```
 
-### 4. Set up the API
+### 2. Configurar variables de entorno
 
-```bash
-# Run migrations
-npm run db:migrate
-
-# Seed the admin user
-npm run db:seed
+**API** — edita `apps/api/.env`:
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app?schema=public"
+JWT_SECRET="tu-secreto"
+JWT_EXPIRES_IN="7d"
+PORT=3001
 ```
 
-### 4. Start both apps
-
-```bash
-# Terminal 1
-npm run dev:api
-
-# Terminal 2
-npm run dev:web
+**Web** — edita `apps/web/.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+### 3. Levantar la base de datos
 
-## Default Credentials
+**Opción A — Docker (recomendado)**
+```bash
+docker-compose up -d
+```
 
-| Email | Password | Role |
+**Opción B — PostgreSQL local**
+```bash
+createdb -U postgres app
+# Ajusta DATABASE_URL en apps/api/.env con tus credenciales
+```
+
+### 4. Migrations y seed
+
+```bash
+npm run db:migrate   # crea las tablas
+npm run db:seed      # crea el usuario admin por defecto
+```
+
+### 5. Arrancar los dos servidores
+
+```bash
+npm run dev
+```
+
+O por separado:
+```bash
+npm run dev:api   # terminal 1
+npm run dev:web   # terminal 2
+```
+
+Abre [http://localhost:3000](http://localhost:3000).
+
+## Credenciales por defecto
+
+| Email | Password | Rol |
 |---|---|---|
 | admin@test.com | admin123 | ADMIN |
+
+## Roles
+
+| Rol | Descripción |
+|---|---|
+| `USER` | Usuario estándar |
+| `ADMIN` | Gestión de usuarios |
+| `SUPERADMIN` | Acceso total |
 
 ## API Endpoints
 
 ```
 POST   /api/auth/register
 POST   /api/auth/login
-GET    /api/auth/me          (JWT required)
+GET    /api/auth/me              (JWT requerido)
 
-GET    /api/users            (ADMIN)
-POST   /api/users            (ADMIN)
-PATCH  /api/users/:id        (ADMIN)
-DELETE /api/users/:id        (ADMIN)
+GET    /api/users                (SUPERADMIN)
+GET    /api/users/:id            (SUPERADMIN)
+POST   /api/users                (SUPERADMIN)
+PATCH  /api/users/:id            (SUPERADMIN)
+DELETE /api/users/:id            (SUPERADMIN)
 
-GET    /api/posts            (public)
-GET    /api/posts/:id        (public)
-POST   /api/posts            (JWT required)
-PATCH  /api/posts/:id        (JWT, own post or ADMIN)
-DELETE /api/posts/:id        (JWT, own post or ADMIN)
+GET    /api/posts                (público)
+GET    /api/posts/:id            (público)
+POST   /api/posts                (JWT requerido)
+PATCH  /api/posts/:id            (JWT, post propio o ADMIN)
+DELETE /api/posts/:id            (JWT, post propio o ADMIN)
 ```
 
-## Frontend Pages
+## Páginas del frontend
 
-| Path | Access |
+| Ruta | Acceso |
 |---|---|
-| `/login` | Public |
-| `/register` | Public |
-| `/dashboard` | Authenticated |
-| `/posts` | Authenticated |
-| `/admin/users` | ADMIN only |
+| `/login` | Público |
+| `/register` | Público |
+| `/dashboard` | Autenticado |
+| `/posts` | Autenticado |
+| `/admin/users` | ADMIN |
 
-## Nx Commands
+## Comandos útiles
 
 ```bash
-# Lint all projects
-npm run lint
+npm run lint            # lint de todos los proyectos
+npm run build:web       # build del frontend
+npm run build:api       # build del backend
 
-# Build
-npm run build:web
-npm run build:api
-
-# Database
-npm run db:generate   # regenerate Prisma client
-npm run db:migrate    # run migrations
-npm run db:seed       # seed admin user
+npm run db:generate     # regenerar cliente Prisma
+npm run db:migrate      # correr migraciones
+npm run db:seed         # seed del usuario admin
 ```

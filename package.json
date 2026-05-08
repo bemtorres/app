@@ -18,7 +18,7 @@
     "test": "nx run-many --target=test",
     "db:migrate": "cd apps/api && npx prisma migrate dev",
     "db:seed": "nx run api:db-seed",
-    "db:generate": "nx run api:db-generate"
+    "db:generate": "npx prisma generate --schema=apps/api/prisma/schema.prisma"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
