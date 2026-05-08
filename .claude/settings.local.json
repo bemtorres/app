@@ -36,7 +36,29 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\benja\\\\Desktop\\\\Nueva carpeta \\(3\\)\\\\app\" -Recurse -Filter \"pnpm-lock.yaml\" -ErrorAction SilentlyContinue)",
       "Bash(Select-Object FullName)",
       "PowerShell(npm --version)",
-      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\benja\\\\Desktop\\\\Nueva carpeta \\(3\\)\\\\app\\\\apps\\\\api\\\\src\\\\assets\" -Force)"
+      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\benja\\\\Desktop\\\\Nueva carpeta \\(3\\)\\\\app\\\\apps\\\\api\\\\src\\\\assets\" -Force)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\benja\\\\Desktop\\\\Nueva carpeta \\(3\\)\\\\app\" -Recurse -Directory)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\benja\\\\Desktop\\\\Nueva carpeta \\(3\\)\\\\app\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\libs\")",
+      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/next-themes/dist/index.js', 'utf8'\\); const match = src.match\\(/script[\\\\s\\\\S]{0,200}/\\); console.log\\(match ? match[0].substring\\(0,300\\) : 'no script tag found'\\)\")",
+      "Bash(find \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\" -maxdepth 2 -type f -name \"*.json\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\api\\\\\\\\src\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\api\\\\\\\\src\\\\\\\\auth\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\api\\\\\\\\src\\\\\\\\users\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\\\\\\\\\\(auth\\)\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\\\\\\\\\\(protected\\)\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\libs\\\\\\\\ui\\\\\\\\src\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\libs\\\\\\\\types\\\\\\\\src\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\components\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\libs\\\\\\\\ui\\\\\\\\src\\\\\\\\components\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\\\\\\\\\\(protected\\)\\\\\\\\dashboard\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\\\\\\\\\\(protected\\)\\\\\\\\posts\")",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\benja\\\\\\\\Desktop\\\\\\\\Nueva carpeta \\(3\\)\\\\\\\\app\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\lib\")",
+      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/next-themes/dist/index.d.ts', 'utf8'\\); console.log\\(src\\)\")"
     ]
   }
 }

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Users, FileText, LogOut, Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/components/providers/ThemeProvider';
 import { cn } from '@app/ui';
 import { Button } from '@app/ui';
 import { clearAuth, getUser, isSuperAdmin } from '@/lib/auth';

@@ -1,16 +1,18 @@
 # Fullstack Monorepo
 
-Nx monorepo con Next.js 16 (App Router) en el frontend y NestJS en el backend.
+Monorepo Nx con Next.js 15 (App Router) en el frontend y NestJS en el backend.
 
 ## Stack
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | Next.js 16, React 19, Tailwind CSS, shadcn/ui |
-| Backend | NestJS, Prisma ORM |
+| Frontend | Next.js 15, React 19, Tailwind CSS, shadcn/ui |
+| Formularios | React Hook Form, Zod |
+| HTTP client | Axios |
+| Backend | NestJS 10, Prisma ORM 5 |
 | Base de datos | PostgreSQL |
-| Auth | JWT + bcrypt |
-| Monorepo | Nx 20 |
+| Auth | JWT + Passport + bcrypt |
+| Monorepo | Nx 20, npm workspaces |
 
 ## Estructura
 
@@ -20,7 +22,9 @@ app/
 │   ├── web/          # Next.js  (puerto 3000)
 │   └── api/          # NestJS   (puerto 3001)
 ├── libs/
-│   └── types/        # Interfaces TypeScript compartidas
+│   ├── ui/           # Componentes shadcn/ui compartidos
+│   ├── types/        # Interfaces TypeScript compartidas
+│   └── config/       # Configuración compartida
 └── package.json
 ```
 
@@ -128,6 +132,7 @@ DELETE /api/posts/:id            (JWT, post propio o ADMIN)
 ## Comandos útiles
 
 ```bash
+npm run dev             # inicia api + web en paralelo
 npm run lint            # lint de todos los proyectos
 npm run build:web       # build del frontend
 npm run build:api       # build del backend

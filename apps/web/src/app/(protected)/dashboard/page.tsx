@@ -14,7 +14,7 @@ export default function DashboardPage() {
   useEffect(() => {
     Promise.all([
       api.get<Post[]>('/posts').then((r) => r.data.length),
-      currentUser?.role === 'ADMIN'
+      currentUser?.role === 'SUPERADMIN'
         ? api.get<User[]>('/users').then((r) => r.data.length)
         : Promise.resolve(null),
     ])
@@ -41,7 +41,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {currentUser?.role === 'ADMIN' && (
+        {currentUser?.role === 'SUPERADMIN' && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Total Users</CardTitle>
