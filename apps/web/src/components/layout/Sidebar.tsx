@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { LayoutDashboard, Users, FileText, LogOut, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, FolderTree, Mail, LogOut, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { cn } from '@app/ui';
 import { Button } from '@app/ui';
@@ -13,9 +13,13 @@ import type { User } from '@app/types';
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/posts', label: 'Posts', icon: FileText },
+  { href: '/categories', label: 'Categories', icon: FolderTree },
 ];
 
-const adminItems = [{ href: '/admin/users', label: 'Users', icon: Users }];
+const adminItems = [
+  { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/email', label: 'Email Config', icon: Mail },
+];
 
 export function Sidebar() {
   const pathname = usePathname();

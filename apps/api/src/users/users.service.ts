@@ -36,6 +36,11 @@ export class UsersService {
   async update(id: number, dto: UpdateUserDto, currentUserId: number) {
     const target = await this.findOne(id);
 
+    if (dto.email && dto.email !== target.email) {
+      const exists = await this.prisma.user.findUnique({ where: { email: dto.email } });
+      if (exists) throw new ConflictException('Email already in use');
+    }
+
     // Prevent downgrading a SUPERADMIN if they are the last one
     if (target.role === 'SUPERADMIN' && dto.role && dto.role !== 'SUPERADMIN') {
       const superadminCount = await this.prisma.user.count({ where: { role: 'SUPERADMIN' } });
@@ -44,7 +49,9 @@ export class UsersService {
       }
     }
 
-    const data: any = { ...dto };
+    const data: any = {};
+    if (dto.email !== undefined) data.email = dto.email;
+    if (dto.role !== undefined) data.role = dto.role;
     if (dto.password) data.password = await bcrypt.hash(dto.password, 10);
 
     return this.prisma.user.update({ where: { id }, data, select: SELECT_SAFE });

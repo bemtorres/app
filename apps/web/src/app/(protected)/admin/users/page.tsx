@@ -74,16 +74,23 @@ export default function AdminUsersPage() {
     setOpen(true);
   }
 
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   async function onSubmit(data: any) {
-    const payload = { ...data };
-    if (editing) {
-      if (!payload.password) delete payload.password;
-      await api.patch(`/users/${editing.id}`, payload);
-    } else {
-      await api.post('/users', payload);
+    setSubmitError(null);
+    try {
+      const payload = { ...data };
+      if (editing) {
+        if (!payload.password) delete payload.password;
+        await api.patch(`/users/${editing.id}`, payload);
+      } else {
+        await api.post('/users', payload);
+      }
+      setOpen(false);
+      loadUsers();
+    } catch (err: any) {
+      setSubmitError(err.response?.data?.message ?? 'Something went wrong');
     }
-    setOpen(false);
-    loadUsers();
   }
 
   async function handleDelete(user: User) {
@@ -199,6 +206,9 @@ export default function AdminUsersPage() {
                 <option value={Role.SUPERADMIN}>SUPERADMIN</option>
               </select>
             </div>
+            {submitError && (
+              <p className="text-xs text-destructive">{submitError}</p>
+            )}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
