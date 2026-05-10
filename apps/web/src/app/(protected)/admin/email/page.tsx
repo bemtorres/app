@@ -31,10 +31,10 @@ export default function EmailConfigPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isSuperAdmin()) {
-      router.replace('/dashboard');
-      return;
-    }
+    // if (!isSuperAdmin()) {
+    //   router.replace('/dashboard');
+    //   return;
+    // }
     loadTemplates();
   }, []);
 
